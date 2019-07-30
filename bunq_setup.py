@@ -4,7 +4,7 @@ import bunq.sdk.context as bunqContext
 
 BUNQ_CONF = 'bunq.conf'
 
-if __name__ == 'main':
+if __name__ == '__main__':
     parser = OptionParser()
     parser.add_argument('--api-key',dest='api_key',help='the bunq API key to configure the server')
     args = parser.parse_args()
