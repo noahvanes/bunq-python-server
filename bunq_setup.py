@@ -14,4 +14,4 @@ if __name__ == '__main__':
     parser = ArgumentParser()
     parser.add_argument('--api-key',dest='api_key',help='the bunq API key to configure the server')
     args = parser.parse_args()
-    bunq_setup_configuration(api_key)
+    bunq_setup_configuration(args['api_key'])
