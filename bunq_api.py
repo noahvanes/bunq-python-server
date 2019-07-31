@@ -33,7 +33,7 @@ def get_account(id):
     refresh_api_context()
     # get the account with the given id
     account = endpoint.MonetaryAccountBank.get(id).value
-    account_json = account_to_json(account)
+    account_json = account_to_numerics_json(account)
     return account_json
 
 # transform the bunq account representation into a JSON-friendly format
@@ -42,4 +42,12 @@ def account_to_json(account):
         'id': account.id_,
         'name': account.description,
         'balance': account.balance.value
+    }
+
+def account_to_numerics_json(account):
+    return {
+        'postfix': 'EURO'
+        'data': {
+            'value': f'€{account.balance.value}'
+        }
     }
