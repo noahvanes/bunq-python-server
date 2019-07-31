@@ -1,9 +1,9 @@
+import time
+import math
 from bunq_setup import BUNQ_CONF
 import bunq.sdk.client as bunqClient
 import bunq.sdk.context as bunqContext
 from bunq.sdk.model.generated import endpoint
-from datetime import datetime
-from math import floor
 
 # initialze the bunq API context on startup
 BUNQ_CONTEXT = bunqContext.ApiContext.restore(BUNQ_CONF)
@@ -47,12 +47,12 @@ def account_to_json(account):
     }
 
 def account_to_numerics_json(account):
-    now = datetime.now()
-    daystr = now.strftime("%d/%m")
-    timestr = now.strftime("%H:%M")
+    now = time.localtime()
+    daystr = time.strftime("%d/%m",now)
+    timestr = time.strftime("%H:%M",now)
     return {
         'postfix': f'Balance on {daystr} ({timestr})',
         'data': {
-            'value': f'€{floor(float(account.balance.value))}'
+            'value': f'€{math.floor(float(account.balance.value))}'
         }
     }
