@@ -51,7 +51,7 @@ def account_to_json(account):
     }
 
 def account_to_numerics_json(account):
-    now = TIME_ZONE.localize(datetime.now())
+    now = datetime.now().astimezone(TIME_ZONE)
     daystr = now.strftime("%d/%m")
     timestr = now.strftime("%H:%M")
     return {
