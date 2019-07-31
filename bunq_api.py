@@ -1,6 +1,7 @@
-import time
-import math
-from bunq_setup import BUNQ_CONF
+from math import floor
+from pytz import timezone
+from datetime import datetime
+from bunq_setup import BUNQ_CONF, TIME_CONF
 import bunq.sdk.client as bunqClient
 import bunq.sdk.context as bunqContext
 from bunq.sdk.model.generated import endpoint
@@ -8,6 +9,9 @@ from bunq.sdk.model.generated import endpoint
 # initialze the bunq API context on startup
 BUNQ_CONTEXT = bunqContext.ApiContext.restore(BUNQ_CONF)
 bunqContext.BunqContext.load_api_context(BUNQ_CONTEXT)
+# initialize the timezone settings
+with open(TIME_CONF,'r') as f:
+    TIME_ZONE = timezone(f.read())
 
 # when the sessions expires, need to reload
 def refresh_api_context():
@@ -47,12 +51,12 @@ def account_to_json(account):
     }
 
 def account_to_numerics_json(account):
-    now = time.localtime()
-    daystr = time.strftime("%d/%m",now)
-    timestr = time.strftime("%H:%M",now)
+    now = TIME_ZONE.localize(datetime.now())
+    daystr = now.strftime("%d/%m")
+    timestr = now.strftime("%H:%M")
     return {
         'postfix': f'Balance on {daystr} ({timestr})',
         'data': {
-            'value': f'€{math.floor(float(account.balance.value))}'
+            'value': f'€{floor(float(account.balance.value))}'
         }
     }
