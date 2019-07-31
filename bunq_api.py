@@ -53,6 +53,6 @@ def account_to_numerics_json(account):
     return {
         'postfix': f'Balance on {daystr} ({timestr})',
         'data': {
-            'value': f'€{floor(account.balance.value)}'
+            'value': f'€{floor(float(account.balance.value))}'
         }
     }
