@@ -46,7 +46,7 @@ def account_to_json(account):
 
 def account_to_numerics_json(account):
     return {
-        'postfix': 'EURO'
+        'postfix': 'EURO',
         'data': {
             'value': f'€{account.balance.value}'
         }
