@@ -1,14 +1,18 @@
 import os
-import time
 import socket
 from argparse import ArgumentParser
 import bunq.sdk.context as bunqContext
 from passlib.apps import custom_app_context as pwd_ctx
 
 # configuration files to set up
-AUTH_CONF = 'config/auth.conf'
-TIME_CONF = 'config/timezone.conf'
-BUNQ_CONF = 'config/bunq.conf'
+CONFIG_DIR = 'config'
+AUTH_CONF = os.path.join(CONFIG_DIR,'auth.conf')
+TIME_CONF = os.path.join(CONFIG_DIR,'timezone.conf')
+BUNQ_CONF = os.path.join(CONFIG_DIR,'bunq.conf')
+
+def setup_config_dir():
+    if not os.path.exists(CONFIG_DIR):
+        os.mkdir(CONFIG_DIR)
 
 def python_setup_timezone(timezone):
     with open(TIME_CONF,'w') as f:
@@ -25,6 +29,8 @@ def bunq_setup_configuration(api_key,description,proxy_url,is_production):
 
 # main entry point
 if __name__ == '__main__':
+    # setup config dir
+    setup_config_dir()
     # parse the command-line arguments
     parser = ArgumentParser()
     parser.add_argument('api_key',help='the bunq API key to configure the server')

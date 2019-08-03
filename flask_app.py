@@ -64,10 +64,3 @@ class AccountNumericsData(Resource):
             }
         }
 api.add_resource(AccountNumericsData, '/accounts/<id>/numerics')
-
-# only use this to test and debug your configuration locally
-# assumes that you have an SSL certificate located in the config folder
-# for production, it is recommended that you use e.g., gunicorn to launch this app
-if __name__ == '__main__':
-    ssl_context = ('config/cert.pem','config/key.pem')
-    app.run(ssl_context=ssl_context)
