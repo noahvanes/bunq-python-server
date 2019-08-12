@@ -52,6 +52,9 @@ Therefore, the server only supports the following requests:
 - ``GET /accounts``: to get an overview of all active accounts
 - ``GET /accounts/<id>``: to get more detailed information (currently, just the description and balance) for the account with the given ``<id>``
 - ``GET /accounts/<id>/numerics``: retrieves the balance for the account with the given ``<id>``, and outputs the data in the specific JSON-format that can be parsed by the [Numerics](https://cynapse.com/numerics/) app
+- ``GET /cards``: to get an overview of all active (non-virtual) cards
+- ``GET /cards/<id>``: to get more detailed information for the card with the given ``<id>``
+- ``GET /cards/<id>/numerics``: retrieves the balance for the account that is currently linked to the card with the given ``<id>``, and outputs the data in the specific JSON-format that can be parsed by the [Numerics](https://cynapse.com/numerics/) app
 
 Note that all requests need to be secured by providing the preconfigured password using HTTP Basic Auth (the username is ignored).
 
