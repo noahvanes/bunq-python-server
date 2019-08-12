@@ -28,6 +28,19 @@ def verify_password(username,password):
     # instead, we only check if the password matches the one given at setup
     return pwd_ctx.verify(password,PWD_HASH)
 
+# Helper to convert a balance into the Numerics JSON format
+def numerics_balance_json(amount):
+    now = datetime.now().astimezone(TIME_ZONE)
+    datestr = now.strftime("%d/%m")
+    timestr = now.strftime("%H:%M")
+    balance = floor(float(amount))
+    return {
+        'postfix': f'Balance on {datestr} ({timestr})',
+        'data': {
+            'value': f'€{balance}'
+        }
+    }
+
 # Accounts Resource
 class Accounts(Resource):
     @auth.login_required
@@ -44,23 +57,40 @@ class Account(Resource):
         return jsonify(account)
 api.add_resource(Account, '/accounts/<id>')
 
-# Account Resource
+# Account Numerics Resource
 class AccountNumericsData(Resource):
     @auth.login_required
     def get(self,id):
         account = bunq.get_account(id)
-        account_numerics = AccountNumericsData.account_to_numerics_json(account)
+        account_balance = account['balance']
+        account_numerics = numerics_balance_json(account_balance)
         return jsonify(account_numerics)
-    @staticmethod
-    def account_to_numerics_json(account):
-        now = datetime.now().astimezone(TIME_ZONE)
-        datestr = now.strftime("%d/%m")
-        timestr = now.strftime("%H:%M")
-        balance = floor(float(account['balance']))
-        return {
-            'postfix': f'Balance on {datestr} ({timestr})',
-            'data': {
-                'value': f'€{balance}'
-            }
-        }
 api.add_resource(AccountNumericsData, '/accounts/<id>/numerics')
+
+# Cards Resource
+class Cards(Resource):
+    @auth.login_required
+    def get(self):
+        all_cards = bunq.all_cards()
+        return jsonify(list(all_cards))
+api.add_resource(Cards, '/cards')
+
+# Card Resource
+class Card(Resource):
+    @auth.login_required
+    def get(self,id):
+        card = bunq.get_card(id)
+        return jsonify(card)
+api.add_resource(Card,'/cards/<id>')
+
+# Card Numerics Resource
+class CardNumericsData(Resource):
+    @auth.login_required
+    def get(self,id):
+        card = bunq.get_card(id)
+        account_id = card['primary_account_id']
+        account = bunq.get_account(account_id)
+        account_balance = account['balance']
+        account_numerics = numerics_balance_json(account_balance)
+        return jsonify(account_numerics)
+api.add_resource(CardNumericsData,'/cards/<id>/numerics')
