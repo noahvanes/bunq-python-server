@@ -24,25 +24,29 @@ def account_to_json(account):
     }
 
 # get a list of all active accounts
-def all_accounts():
+def all_accounts(is_joint=False):
+    # determine account type
+    account_type = endpoint.MonetaryAccountJoint if is_joint else endpoint.MonetaryAccountBank
     # ensure the session is still active
     refresh_api_context()
     # setup pagination
     pagination = bunqClient.Pagination()
     pagination.count = 25
     # make the request
-    all_accounts = endpoint.MonetaryAccountBank.list(pagination.url_params_count_only).value
+    all_accounts = account_type.list(pagination.url_params_count_only).value
     # only include active accounts
     all_active_accounts = filter(lambda acc: acc.status == 'ACTIVE', all_accounts)
     all_active_accounts_json = map(account_to_json, all_active_accounts)
     return all_active_accounts_json
 
 # get the balance of a specific account
-def get_account(id):
+def get_account(id,is_joint=False):
+    # determine account type
+    account_type = endpoint.MonetaryAccountJoint if is_joint else endpoint.MonetaryAccountBank
     # ensure the session is still active
     refresh_api_context()
     # get the account with the given id
-    account = endpoint.MonetaryAccountBank.get(id).value
+    account = account_type.get(id).value
     account_json = account_to_json(account)
     return account_json
 

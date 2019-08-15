@@ -3,7 +3,7 @@ from bunq_setup import AUTH_CONF, TIME_CONF, pwd_ctx
 from math import floor
 from pytz import timezone
 from datetime import datetime
-from flask import Flask, jsonify
+from flask import Flask, jsonify, request
 from flask_restful import Api, Resource, reqparse
 from flask_httpauth import HTTPBasicAuth
 from flask_sslify import SSLify
@@ -45,7 +45,8 @@ def numerics_balance_json(amount):
 class Accounts(Resource):
     @auth.login_required
     def get(self):
-        all_accounts = bunq.all_accounts()
+        is_joint = True if request.args.get('joint') == 'true' else False
+        all_accounts = bunq.all_accounts(is_joint)
         return jsonify(list(all_accounts))
 api.add_resource(Accounts, '/accounts')
 
@@ -53,7 +54,8 @@ api.add_resource(Accounts, '/accounts')
 class Account(Resource):
     @auth.login_required
     def get(self,id):
-        account = bunq.get_account(id)
+        is_joint = True if request.args.get('joint') == 'true' else False
+        account = bunq.get_account(id,is_joint)
         return jsonify(account)
 api.add_resource(Account, '/accounts/<id>')
 
@@ -61,7 +63,8 @@ api.add_resource(Account, '/accounts/<id>')
 class AccountNumericsData(Resource):
     @auth.login_required
     def get(self,id):
-        account = bunq.get_account(id)
+        is_joint = True if request.args.get('joint') == 'true' else False
+        account = bunq.get_account(id,is_joint)
         account_balance = account['balance']
         account_numerics = numerics_balance_json(account_balance)
         return jsonify(account_numerics)
